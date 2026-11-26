@@ -121,6 +121,31 @@ function openEditor(script = null) {
 }
 
 document.getElementById("newScript").addEventListener("click", () => openEditor());
+document.getElementById("syncRepo").addEventListener("click", syncRepo);
+
+async function syncRepo() {
+  setStatus("Syncing repository scripts...");
+  try {
+    const response = await fetch("https://api.github.com/repos/refdagew/browser-toolkit/contents/scripts");
+    if (!response.ok) throw new Error("GitHub returned " + response.status);
+    const files = await response.json();
+    const remote = await Promise.all(files.filter(file => file.name.endsWith(".bookmarklet.json")).map(async file => {
+      const result = await fetch(file.download_url);
+      if (!result.ok) throw new Error("Could not load " + file.name);
+      return normalize(await result.json());
+    }));
+    for (const script of remote) {
+      const index = scripts.findIndex(item => item.id === script.id);
+      if (index >= 0) scripts[index] = script;
+      else scripts.push(script);
+    }
+    await saveAll();
+    setStatus("Synced " + remote.length + " repository scripts.");
+  } catch (error) {
+    setStatus(error.message);
+  }
+}
+
 document.getElementById("cancelEdit").addEventListener("click", () => { editor.hidden = true; });
 document.getElementById("importScripts").addEventListener("click", () => fileInput.click());
 
