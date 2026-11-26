@@ -40,7 +40,7 @@ function openEditor(script=null){
  jsonEditor.value=JSON.stringify(script||template,null,2);
  editor.hidden=false;
 }
-function readDraft(){return normalize(JSON.parse(jsonEditor.value))}
+function readDraft(){const data=JSON.parse(jsonEditor.value);data.button=data.button||{};data.button.mode=document.getElementById("mode").value;return normalize(data)}
 document.getElementById("newScript").addEventListener("click",()=>openEditor());
 document.getElementById("cancelEdit").addEventListener("click",()=>{editor.hidden=true});
 document.getElementById("exportDraft").addEventListener("click",()=>{try{download(readDraft())}catch(e){setStatus(e.message)}});
