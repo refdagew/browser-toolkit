@@ -5,7 +5,7 @@ const fileInput=document.getElementById("fileInput");
 const jsonEditor=document.getElementById("jsonEditor");
 let scripts=[];
 let editingId=null;
-const template={schemaVersion:1,id:"my-custom-script",name:"My custom script",description:"Describe what this script does.",button:{label:"Enable",activeLabel:"Disable",mode:"toggle"},code:`(() => {\n  const key = "__myCustomScript";\n  if (window[key]) {\n    window[key] = false;\n    return;\n  }\n  window[key] = true;\n})();`};
+const template={schemaVersion:1,id:"my-custom-script",name:"My custom script",description:"Describe what this script does.",button:{label:"Run",activeLabel:"Stop",mode:"run"},code:`(() => {\n  const key = "__myCustomScript";\n  if (window[key]) {\n    window[key] = false;\n    return;\n  }\n  window[key] = true;\n})();`};
 function setStatus(message){status.textContent=message}
 function safeId(value){return value.toLowerCase().trim().replace(/[^a-z0-9-]+/g,"-").replace(/^-+|-+$/g,"")}
 function normalize(data){
@@ -14,7 +14,7 @@ function normalize(data){
  const id=safeId(String(data.id||name));
  if(!id)throw new Error("A valid script ID is required.");
  const button=data.button||{};
- return {schemaVersion:1,id,name,description:String(data.description||""),button:{label:String(button.label||"Run"),activeLabel:String(button.activeLabel||"Disable"),mode:button.mode==="toggle"?"toggle":"action"},code:data.code};
+ return {schemaVersion:1,id,name,description:String(data.description||""),button:{label:String(button.label||"Run"),activeLabel:String(button.activeLabel||"Disable"),mode:button.mode==="toggle"?"toggle":"run"},code:data.code};
 }
 function download(script){const blob=new Blob([JSON.stringify(script,null,2)],{type:"application/json"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=script.id+".bookmarklet.json";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
 async function load(){const data=await chrome.storage.local.get("customScripts");scripts=Array.isArray(data.customScripts)?data.customScripts:[];render()}
