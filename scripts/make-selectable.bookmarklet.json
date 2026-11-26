@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "id": "make-selectable",
+  "name": "Make text selectable",
+  "description": "Toggle text selection and copying on the page.",
+  "button": {
+    "label": "Enable selection",
+    "activeLabel": "Disable selection",
+    "mode": "toggle"
+  },
+  "code": "(() => {\n  const id = \"browser-toolkit-selectable\";\n  const old = document.getElementById(id);\n  if (old) {\n    old.remove();\n    return;\n  }\n  const style = document.createElement(\"style\");\n  style.id = id;\n  style.textContent = \"* { user-select: text !important; -webkit-user-select: text !important; }\";\n  (document.head || document.documentElement).append(style);\n})();"
+}
