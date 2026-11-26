@@ -9,18 +9,13 @@
 <body>
 <header><img src="toolbox.png" alt=""><div><h1>Browser Toolkit</h1><p>Custom script manager</p></div></header>
 <main>
-<div class="toolbar"><button id="newScript">＋ New script</button><button id="importScripts" class="quiet">Import</button><input id="fileInput" type="file" accept=".json,.bookmarklet.json,application/json" multiple hidden></div>
-<p id="status" role="status">Your custom scripts are stored in this browser.</p>
+<div class="toolbar"><button id="newScript">＋ New script</button><button id="importScripts" class="quiet">Import JSON</button><input id="fileInput" type="file" accept=".json,.bookmarklet.json,application/json" multiple hidden></div>
+<p id="status" role="status">The bookmarklet syncs the public scripts automatically. This helper is only for your custom scripts.</p>
 <section id="scriptList"></section>
 <form id="editor" hidden>
 <div class="editor-head"><h2 id="editorTitle">New custom script</h2><button type="button" id="cancelEdit" class="icon-button">×</button></div>
-<label>Script name<input id="name" required maxlength="100" placeholder="My custom tool"></label>
-<label>Script ID<input id="scriptId" required maxlength="100" pattern="[a-z0-9-]+" placeholder="my-custom-tool"></label>
-<label>Description<input id="description" maxlength="240" placeholder="What does this script do?"></label>
-<div class="two"><label>Button label<input id="label" value="Run"></label><label>Active label<input id="activeLabel" value="Disable"></label></div>
-<label>Button behavior<select id="mode"><option value="action">Action</option><option value="toggle">Toggle</option></select></label>
-<label>JavaScript<textarea id="code" required spellcheck="false"></textarea></label>
-<p class="hint">Template is ready to edit. Your code runs on the current page when selected in the bookmarklet.</p>
+<label>Bookmarklet JSON<textarea id="jsonEditor" required spellcheck="false"></textarea></label>
+<p class="hint">Edit the JSON template, then save. Export downloads a .bookmarklet.json file.</p>
 <div class="toolbar"><button type="submit">Save script</button><button type="button" id="exportDraft" class="quiet">Export JSON</button></div>
 </form>
 </main>
