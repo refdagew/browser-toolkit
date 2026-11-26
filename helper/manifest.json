@@ -1,0 +1,17 @@
+{
+  "manifest_version": 3,
+  "name": "Browser Toolkit Helper",
+  "version": "1.0.0",
+  "description": "Manage Browser Toolkit bookmarklet scripts.",
+  "permissions": ["storage"],
+  "action": {
+    "default_title": "Browser Toolkit Helper",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "128": "toolbox.png"
+    }
+  },
+  "icons": {
+    "128": "toolbox.png"
+  }
+}
