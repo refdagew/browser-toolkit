@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "id": "autoclicker",
+  "name": "Autoclicker (F9)",
+  "description": "Press F9 to start or stop clicking at the pointer.",
+  "button": {
+    "label": "Toggle autoclicker",
+    "activeLabel": "Autoclicker ready",
+    "mode": "action"
+  },
+  "code": "(() => {\n  const key = \"__browserToolkitAutoclicker\";\n  if (window[key]) {\n    clearInterval(window[key].timer);\n    window.removeEventListener(\"keydown\", window[key].handler);\n    delete window[key];\n  }\n  const state = { x: innerWidth / 2, y: innerHeight / 2, timer: null, running: false };\n  const handler = event => {\n    if (event.key !== \"F9\" || event.repeat) return;\n    state.running = !state.running;\n    if (state.running) {\n      state.timer = setInterval(() => {\n        const target = document.elementFromPoint(state.x, state.y);\n        if (target) target.click();\n      }, 0);\n    } else {\n      clearInterval(state.timer);\n    }\n  };\n  window.addEventListener(\"mousemove\", event => {\n    state.x = event.clientX;\n    state.y = event.clientY;\n  });\n  window.addEventListener(\"keydown\", handler);\n  window[key] = state;\n})();"
+}
