@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "id": "autoclicker",
-  "name": "Autoclicker (F9)",
-  "description": "Press F9 to start or stop clicking at the pointer.",
+  "name": "Autoclicker",
+  "description": "F8 toggles clicking beneath your pointer. Escape stops it. Rate is 1–20 clicks/sec.",
   "button": {
-    "label": "Toggle autoclicker",
-    "activeLabel": "Autoclicker ready",
-    "mode": "action"
+    "label": "Start",
+    "activeLabel": "Stop",
+    "mode": "toggle"
   },
-  "code": "(() => {\n  const key = \"__browserToolkitAutoclicker\";\n  if (window[key]) {\n    clearInterval(window[key].timer);\n    window.removeEventListener(\"keydown\", window[key].handler);\n    window.removeEventListener(\"mousemove\", window[key].move);\n    delete window[key];\n  }\n  const state = { x: innerWidth / 2, y: innerHeight / 2, timer: null, running: false };\n  state.move = event => {\n    state.x = event.clientX;\n    state.y = event.clientY;\n  };\n  state.handler = event => {\n    if (event.key !== \"F9\" || event.repeat) return;\n    state.running = !state.running;\n    if (state.running) {\n      state.timer = setInterval(() => {\n        const target = document.elementFromPoint(state.x, state.y);\n        if (target) target.click();\n      }, 0);\n    } else {\n      clearInterval(state.timer);\n    }\n  };\n  window.addEventListener(\"mousemove\", state.move);\n  window.addEventListener(\"keydown\", state.handler);\n  window[key] = state;\n})();"
+  "code": "(() => {const key=\"__browserToolkitAutoclicker\";const old=window[key];if(old?.running){clearInterval(old.timer);old.running=false;window.__browserToolkitUpdate?.(\"autoclicker\",false);return;}if(old){clearInterval(old.timer);window.removeEventListener(\"keydown\",old.keyHandler,true);window.removeEventListener(\"mousemove\",old.moveHandler,true);}const state={running:true,timer:null,x:innerWidth/2,y:innerHeight/2};const stop=()=>{clearInterval(state.timer);state.running=false;window.__browserToolkitUpdate?.(\"autoclicker\",false);};const start=()=>{if(state.running)return;state.running=true;const rate=Math.max(1,Math.min(20,parseInt(window.__browserToolkitCps||5,10)||5));state.timer=setInterval(()=>{const el=document.elementFromPoint(state.x,state.y);if(el&&!el.closest(\"#__browser_toolkit_v1\"))el.click();},1000/rate);window.__browserToolkitUpdate?.(\"autoclicker\",true);};state.moveHandler=e=>{state.x=e.clientX;state.y=e.clientY;};state.keyHandler=e=>{if(e.key===\"Escape\")stop();if(e.key===\"F8\"&&![\"INPUT\",\"TEXTAREA\"].includes(document.activeElement?.tagName)){e.preventDefault();state.running?stop():start();}};state.stop=stop;state.start=start;const rate=Math.max(1,Math.min(20,parseInt(window.__browserToolkitCps||5,10)||5));state.timer=setInterval(()=>{const el=document.elementFromPoint(state.x,state.y);if(el&&!el.closest(\"#__browser_toolkit_v1\"))el.click();},1000/rate);window.addEventListener(\"mousemove\",state.moveHandler,true);window.addEventListener(\"keydown\",state.keyHandler,true);window[key]=state;window.__browserToolkitUpdate?.(\"autoclicker\",true);})();"
 }
