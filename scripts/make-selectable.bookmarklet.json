@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "id": "make-selectable",
-  "name": "Make text selectable",
-  "description": "Toggle text selection and copying on the page.",
+  "name": "Text selection & copying",
+  "description": "Allow selection and stop common page handlers from blocking it.",
   "button": {
-    "label": "Enable selection",
-    "activeLabel": "Disable selection",
+    "label": "Off",
+    "activeLabel": "On",
     "mode": "toggle"
   },
-  "code": "(() => {\n  const id = \"browser-toolkit-selectable\";\n  const old = document.getElementById(id);\n  if (old) {\n    old.remove();\n    return;\n  }\n  const style = document.createElement(\"style\");\n  style.id = id;\n  style.textContent = \"* { user-select: text !important; -webkit-user-select: text !important; }\";\n  (document.head || document.documentElement).append(style);\n})();"
+  "code": "(() => {const key=\"__browserToolkitSelection\";if(window[key]){[\"copy\",\"cut\",\"contextmenu\",\"selectstart\"].forEach(t=>document.removeEventListener(t,window[key],true));document.getElementById(\"__browserToolkitSelectionStyle\")?.remove();delete window[key];return;}const style=document.createElement(\"style\");style.id=\"__browserToolkitSelectionStyle\";style.textContent=\"*{-webkit-user-select:text!important;user-select:text!important}\";(document.head||document.documentElement).append(style);const handler=e=>e.stopImmediatePropagation();[\"copy\",\"cut\",\"contextmenu\",\"selectstart\"].forEach(t=>document.addEventListener(t,handler,true));window[key]=handler;})();"
 }
