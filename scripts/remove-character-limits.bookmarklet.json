@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "id": "remove-character-limits",
+  "name": "Remove character limits",
+  "description": "Remove maxlength restrictions from text fields, including fields added later.",
+  "button": {
+    "label": "Remove limits",
+    "activeLabel": "Limits removed",
+    "mode": "action"
+  },
+  "code": "(() => {\n  const removeLimits = root => {\n    if (root.nodeType !== 1) return;\n    if (root.matches(\"input, textarea\")) root.removeAttribute(\"maxlength\");\n    root.querySelectorAll?.(\"input, textarea\").forEach(el => el.removeAttribute(\"maxlength\"));\n  };\n  removeLimits(document.documentElement);\n  const observer = new MutationObserver(records => {\n    for (const record of records) {\n      record.addedNodes.forEach(removeLimits);\n      if (record.target.nodeType === 1) removeLimits(record.target);\n    }\n  });\n  observer.observe(document.documentElement, { childList: true, subtree: true, attributes: true, attributeFilter: [\"maxlength\"] });\n})();"
+}
