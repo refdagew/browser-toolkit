@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Browser Toolkit Helper</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header>
+    <img src="toolbox.png" alt="">
+    <div>
+      <h1>Browser Toolkit Helper</h1>
+      <p>Manage your bookmarklet scripts</p>
+    </div>
+  </header>
+  <main>
+    <section class="toolbar">
+      <button id="newScript">New script</button>
+      <button id="importScripts" class="secondary">Import</button>
+      <input id="fileInput" type="file" accept=".json,.bookmarklet.json,application/json" hidden>
+    </section>
+    <p id="status" role="status"></p>
+    <section id="scriptList" aria-label="Saved scripts"></section>
+    <form id="editor" hidden>
+      <h2 id="editorTitle">New script</h2>
+      <label>Name<input id="name" required maxlength="100"></label>
+      <label>ID<input id="scriptId" required maxlength="100" pattern="[a-z0-9-]+"></label>
+      <label>Description<input id="description" maxlength="240"></label>
+      <div class="two">
+        <label>Button label<input id="label" value="Run"></label>
+        <label>Active label<input id="activeLabel" value="Stop"></label>
+      </div>
+      <label>Mode
+        <select id="mode">
+          <option value="action">Action</option>
+          <option value="toggle">Toggle</option>
+        </select>
+      </label>
+      <label>Script code<textarea id="code" required spellcheck="false"></textarea></label>
+      <div class="toolbar">
+        <button type="submit">Save script</button>
+        <button type="button" id="cancelEdit" class="secondary">Cancel</button>
+      </div>
+    </form>
+  </main>
+  <script src="popup.js"></script>
+</body>
+</html>
