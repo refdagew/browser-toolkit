@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "id": "remove-character-limits",
-  "name": "Remove character limits",
-  "description": "Remove maxlength restrictions from text fields, including fields added later.",
+  "name": "Character limits",
+  "description": "Remove maxlength and minlength from inputs and textareas. Toggle restores original values.",
   "button": {
     "label": "Remove limits",
-    "activeLabel": "Limits removed",
-    "mode": "action"
+    "activeLabel": "Restore limits",
+    "mode": "toggle"
   },
-  "code": "(() => {\n  const removeLimits = root => {\n    if (root.nodeType !== 1) return;\n    if (root.matches(\"input, textarea\")) root.removeAttribute(\"maxlength\");\n    root.querySelectorAll?.(\"input, textarea\").forEach(el => el.removeAttribute(\"maxlength\"));\n  };\n  removeLimits(document.documentElement);\n  const observer = new MutationObserver(records => {\n    for (const record of records) {\n      record.addedNodes.forEach(removeLimits);\n      if (record.target.nodeType === 1) removeLimits(record.target);\n    }\n  });\n  observer.observe(document.documentElement, { childList: true, subtree: true, attributes: true, attributeFilter: [\"maxlength\"] });\n})();"
+  "code": "(() => {const key=\"__browserToolkitLimits\";if(window[key]){document.querySelectorAll(\"input,textarea\").forEach(el=>{const v=window[key].get(el);if(!v)return;if(v.max===null)el.removeAttribute(\"maxlength\");else el.setAttribute(\"maxlength\",v.max);if(v.min===null)el.removeAttribute(\"minlength\");else el.setAttribute(\"minlength\",v.min);window[key].delete(el);});delete window[key];return;}const saved=new WeakMap();document.querySelectorAll(\"input,textarea\").forEach(el=>{saved.set(el,{max:el.getAttribute(\"maxlength\"),min:el.getAttribute(\"minlength\")});el.removeAttribute(\"maxlength\");el.removeAttribute(\"minlength\");});window[key]=saved;})();"
 }
