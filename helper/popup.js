@@ -2,34 +2,26 @@ const list=document.getElementById("scriptList");
 const editor=document.getElementById("editor");
 const status=document.getElementById("status");
 const fileInput=document.getElementById("fileInput");
+const jsonEditor=document.getElementById("jsonEditor");
 let scripts=[];
 let editingId=null;
-const templateCode=`(() => {
-  const key = "__myCustomTool";
-  if (window[key]) {
-    window[key] = false;
-    return;
-  }
-  window[key] = true;
-  // Add your code here.
-})();`;
+const template={schemaVersion:1,id:"my-custom-script",name:"My custom script",description:"Describe what this script does.",button:{label:"Run",activeLabel:"Disable",mode:"toggle"},code:"(() => {\\n  const key = \"__myCustomScript\";\\n  if (window[key]) {\\n    window[key] = false;\\n    return;\\n  }\\n  window[key] = true;\\n  // Add your code here.\\n})();"};
 function setStatus(message){status.textContent=message}
 function safeId(value){return value.toLowerCase().trim().replace(/[^a-z0-9-]+/g,"-").replace(/^-+|-+$/g,"")}
 function normalize(data){
-  if(!data||typeof data!=="object"||typeof data.code!=="string")throw new Error("Invalid bookmarklet JSON.");
-  const name=String(data.name||data.id||"Untitled script");
-  const id=safeId(String(data.id||name));
-  if(!id)throw new Error("A valid script ID is required.");
-  const button=data.button||{};
-  return {schemaVersion:1,id,name,description:String(data.description||""),button:{label:String(button.label||"Run"),activeLabel:String(button.activeLabel||"Disable"),mode:button.mode==="toggle"?"toggle":"action"},code:data.code};
+ if(!data||typeof data!=="object"||typeof data.code!=="string")throw new Error("Invalid bookmarklet JSON: code must be a string.");
+ const name=String(data.name||data.id||"Untitled script");
+ const id=safeId(String(data.id||name));
+ if(!id)throw new Error("A valid script ID is required.");
+ const button=data.button||{};
+ return {schemaVersion:1,id,name,description:String(data.description||""),button:{label:String(button.label||"Run"),activeLabel:String(button.activeLabel||"Disable"),mode:button.mode==="toggle"?"toggle":"action"},code:data.code};
 }
-function filename(script){return script.id+".bookmarklet.json"}
-function download(script){const blob=new Blob([JSON.stringify(script,null,2)],{type:"application/json"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=filename(script);a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+function download(script){const blob=new Blob([JSON.stringify(script,null,2)],{type:"application/json"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=script.id+".bookmarklet.json";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
 async function load(){const data=await chrome.storage.local.get("customScripts");scripts=Array.isArray(data.customScripts)?data.customScripts:[];render()}
 async function saveAll(){await chrome.storage.local.set({customScripts:scripts});render()}
 function render(){
  list.replaceChildren();
- if(!scripts.length){const empty=document.createElement("p");empty.className="hint";empty.textContent="No custom scripts yet. The main bookmarklet works without this extension and syncs the repository scripts automatically.";list.append(empty);return}
+ if(!scripts.length){const empty=document.createElement("p");empty.className="hint";empty.textContent="No custom scripts saved. The bookmarklet works without this extension and syncs the repository scripts on its own.";list.append(empty);return}
  for(const script of scripts){
   const row=document.createElement("div");row.className="script";
   const info=document.createElement("div");info.className="script-info";
@@ -44,18 +36,11 @@ function render(){
 }
 function openEditor(script=null){
  editingId=script?script.id:null;
- const values=script||{name:"New custom script",id:"new-custom-script",description:"A custom Browser Toolkit script.",button:{label:"Run",activeLabel:"Disable",mode:"toggle"},code:templateCode};
  document.getElementById("editorTitle").textContent=script?"Edit custom script":"New custom script";
- document.getElementById("name").value=values.name;
- document.getElementById("scriptId").value=values.id;
- document.getElementById("description").value=values.description;
- document.getElementById("label").value=values.button.label;
- document.getElementById("activeLabel").value=values.button.activeLabel;
- document.getElementById("mode").value=values.button.mode;
- document.getElementById("code").value=values.code;
+ jsonEditor.value=JSON.stringify(script||template,null,2);
  editor.hidden=false;
 }
-function readDraft(){return normalize({id:document.getElementById("scriptId").value,name:document.getElementById("name").value,description:document.getElementById("description").value,button:{label:document.getElementById("label").value,activeLabel:document.getElementById("activeLabel").value,mode:document.getElementById("mode").value},code:document.getElementById("code").value})}
+function readDraft(){return normalize(JSON.parse(jsonEditor.value))}
 document.getElementById("newScript").addEventListener("click",()=>openEditor());
 document.getElementById("cancelEdit").addEventListener("click",()=>{editor.hidden=true});
 document.getElementById("exportDraft").addEventListener("click",()=>{try{download(readDraft())}catch(e){setStatus(e.message)}});
