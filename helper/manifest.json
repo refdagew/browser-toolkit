@@ -1,20 +1,34 @@
 {
   "manifest_version": 3,
   "name": "Browser Toolkit Helper",
-  "version": "2.0.0",
-  "description": "Create, edit, import and export custom Browser Toolkit scripts.",
-  "permissions": ["storage"],
+  "version": "2.2.0",
+  "description": "Manage custom Browser Toolkit scripts. The bookmarklet works independently.",
+  "permissions": [
+    "storage"
+  ],
+  "host_permissions": [
+    "https://api.github.com/*",
+    "https://raw.githubusercontent.com/*"
+  ],
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
-      "js": ["bridge.js"],
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "bridge.js"
+      ],
       "run_at": "document_idle"
     }
   ],
   "action": {
     "default_title": "Browser Toolkit Helper",
     "default_popup": "popup.html",
-    "default_icon": { "128": "toolbox.png" }
+    "default_icon": {
+      "128": "toolbox.png"
+    }
   },
-  "icons": { "128": "toolbox.png" }
+  "icons": {
+    "128": "toolbox.png"
+  }
 }
