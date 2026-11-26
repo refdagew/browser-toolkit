@@ -5,7 +5,7 @@ const fileInput=document.getElementById("fileInput");
 const jsonEditor=document.getElementById("jsonEditor");
 let scripts=[];
 let editingId=null;
-const template={schemaVersion:1,id:"my-custom-script",name:"My custom script",description:"Describe what this script does.",button:{label:"Run",activeLabel:"Disable",mode:"toggle"},code:"(() => {\\n  const key = \"__myCustomScript\";\\n  if (window[key]) {\\n    window[key] = false;\\n    return;\\n  }\\n  window[key] = true;\\n  // Add your code here.\\n})();"};
+const template={schemaVersion:1,id:"my-custom-script",name:"My custom script",description:"Describe what this script does.",button:{label:"Enable",activeLabel:"Disable",mode:"toggle"},code:`(() => {\n  const key = "__myCustomScript";\n  if (window[key]) {\n    window[key] = false;\n    return;\n  }\n  window[key] = true;\n})();`};
 function setStatus(message){status.textContent=message}
 function safeId(value){return value.toLowerCase().trim().replace(/[^a-z0-9-]+/g,"-").replace(/^-+|-+$/g,"")}
 function normalize(data){
