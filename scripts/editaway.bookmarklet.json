@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "id": "editaway",
+  "name": "Editaway",
+  "description": "Toggle page editing mode.",
+  "button": {
+    "label": "Enable editing",
+    "activeLabel": "Disable editing",
+    "mode": "toggle"
+  },
+  "code": "(() => {\n  const key = \"__browserToolkitEditaway\";\n  if (window[key]) {\n    document.designMode = \"off\";\n    document.querySelectorAll(\"[contenteditable='true']\").forEach(el => {\n      if (el.dataset.browserToolkitEditaway === \"1\") {\n        el.removeAttribute(\"contenteditable\");\n        delete el.dataset.browserToolkitEditaway;\n      }\n    });\n    window[key] = false;\n    return;\n  }\n  document.designMode = \"on\";\n  document.querySelectorAll(\"body, body *\").forEach(el => {\n    if (!el.isContentEditable) {\n      el.setAttribute(\"contenteditable\", \"true\");\n      el.dataset.browserToolkitEditaway = \"1\";\n    }\n  });\n  window[key] = true;\n})();"
+}
